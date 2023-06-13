@@ -21,7 +21,9 @@
     // if you have a GPU, you can use it inside the container
     "--gpus=all",
     // speeds up pytorch data loading
-    "--ipc=host"
+    "--ipc=host",
+    // custom name for the container
+    "--name", "jobgpt_devcontainer"
   ],
   "mounts": [
     // uncomment if you want to persist the container's hugging face cache
