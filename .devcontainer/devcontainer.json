@@ -3,7 +3,7 @@
   "build": {
     "dockerfile": "../Dockerfile",
     "args": {
-      "BASE_REPOSITORY": "https://github.com/dennisbappert/hf-accelerate-sagemaker#egg=hf-accelerate-sagemaker[dev]",
+      "BASE_REPOSITORY": "https://github.com/dennisbappert/jobgpt#egg=jobgpt[dev]",
       "PYTHON_VERSION": "3.10",
       
       "PYTORCH_COMPUTE_PLATFORM": "cu118",
