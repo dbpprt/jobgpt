@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "accelerate main.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "module": "accelerate.commands.launch",
+            "args": [
+                "--config_file=./conf/local.yaml",
+                "main.py"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                // "PYTHONPATH": "../../"
+            }
+        },
+        {
+            "name": "data.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "data.py",
+            "args": [],
+            "console": "integratedTerminal",
+            "env": {
+                // "PYTHONPATH": "../../"
+            }
+        }
+    ]
+}

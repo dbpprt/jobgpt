@@ -1,0 +1,16 @@
+{
+    "include": [
+        "**/*.py"
+    ],
+    "exclude": [
+        "*.egg-info",
+    ],
+    "defineConstant": {
+        "DEBUG": true
+    },
+    "reportMissingImports": true,
+    "reportMissingTypeStubs": false,
+    "reportGeneralTypeIssues": false,
+    "pythonVersion": "3.10",
+    "pythonPlatform": "Linux",
+}

@@ -1,0 +1,6 @@
+metric_name	metric_regex
+train:epoch	^\[Training\] Epoch: ([0-999]) Completed
+train:loss	^\[Training\] Epoch: (?:d) Completed | Loss: ([-+0-9e.]+) -?
+eval:epoch	^\[Eval\] Epoch: ([0-999]) Completed
+eval:loss	^\[Eval\] Epoch: (?:d) Completed | Loss: ([-+0-9e.]+) -?
+eval:f1	    ^\[Eval\] Epoch: (?:d) Completed.*| F1: ([-+0-9e.]+)
