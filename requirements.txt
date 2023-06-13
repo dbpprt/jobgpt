@@ -1,19 +1,19 @@
 torch
 torchvision
 
-accelerate[sagemaker]
-
--f git+https://github.com/huggingface/peft.git
-peft==0.2.0
-
 # to load the stackoverflow dataset
 pandas
 numpy
 
 # huggingface
+-f git+https://github.com/huggingface/peft.git
+peft
+
+-f git+https://github.com/huggingface/transformers.git@main
 transformers
+
+accelerate[sagemaker]
 loralib
 evaluate
-scikit-learn # to calculate f1 score
-# deepspeed
 datasets
+bitsandbytes
