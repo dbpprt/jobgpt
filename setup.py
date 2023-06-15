@@ -32,7 +32,7 @@ setup(
     name="jobgpt",
     version="0.0.1",
     description="project_description",
-    url="https://github.com/dennisbappert/jobgpt",
+    url="https://github.com/dbpprt/jobgpt",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
     author="Dennis Bappert",

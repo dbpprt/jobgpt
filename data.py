@@ -27,7 +27,7 @@ def get_dataloaders(accelerator: Accelerator, model_name: str, batch_size: int, 
     def collate_fn(examples):
         return tokenizer.pad(examples, padding="longest", return_tensors="pt")
 
-    def __preprocess_function(qualifications, descriptions):
+    def __preprocess_function(qualifications, descriptions) -> None:
         batch_size = len(qualifications)
         inputs = [
             f"Write a modern and engaging job posting for the following basic qualifications: {x}\r\nResponse: \r\n"
@@ -68,7 +68,8 @@ def get_dataloaders(accelerator: Accelerator, model_name: str, batch_size: int, 
             x.replace("· ", "\r\n- ") for x in examples["BASIC QUALIFICATIONS"] if x is not None
         ]
         preferred_qualifications = [
-            x.replace("· ", "\r\n- ") for x in examples["PREFERRED QUALIFICATIONS"] if x is not None
+            x.replace("· ", "\r\n- ") 
+            for x in examples["PREFERRED QUALIFICATIONS"] if x is not None
         ]
 
         qualifications = [f"{x}{y}" for x, y in zip(qualifications, preferred_qualifications)]

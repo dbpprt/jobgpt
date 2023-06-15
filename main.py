@@ -152,14 +152,14 @@ def parse_args():
 
     parser.add_argument(
         "--batch_size",
-        default=2,
+        default=8,
         type=int,
         help="the training will find the max batch size that fits into memory and use gradient accumulation",
     )
     parser.add_argument(
-        "--num_epochs", default=10, type=int, metavar="N", help="number of total epochs to run"
+        "--num_epochs", default=30, type=int, metavar="N", help="number of total epochs to run"
     )
-    parser.add_argument("--seq_len", default=1024, type=int, help="sequence length")
+    parser.add_argument("--seq_len", default=512, type=int, help="sequence length")
     parser.add_argument("--learning_rate", default=0.0005, type=float, help="initial learning rate")
     parser.add_argument("--seed", default=42, type=int, help="seed for initializing training. ")
 

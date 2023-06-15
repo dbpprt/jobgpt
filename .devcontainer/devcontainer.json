@@ -3,7 +3,7 @@
   "build": {
     "dockerfile": "../Dockerfile",
     "args": {
-      "BASE_REPOSITORY": "https://github.com/dennisbappert/jobgpt#egg=jobgpt[dev]",
+      "BASE_REPOSITORY": "https://github.com/dbpprt/jobgpt#egg=jobgpt[dev]",
       "PYTHON_VERSION": "3.10",
       
       "PYTORCH_COMPUTE_PLATFORM": "cu118",
@@ -50,6 +50,7 @@
         // python language support
         "ms-python.python",
         "ms-python.vscode-pylance",
+        "ms-python.pylint",
         // jupyter
         "ms-toolsai.jupyter",
         "ms-toolsai.vscode-jupyter-cell-tags",
