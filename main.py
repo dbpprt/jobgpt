@@ -157,7 +157,7 @@ def main(args):
 def parse_args():
     parser = argparse.ArgumentParser(description="Multilabel text classification")
 
-    parser.add_argument("--model_name", default="EleutherAI/pythia-70m", type=str)
+    parser.add_argument("--model_name", default="EleutherAI/pythia-2.8b", type=str)
 
     parser.add_argument(
         "--batch_size",

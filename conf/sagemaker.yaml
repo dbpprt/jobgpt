@@ -5,11 +5,11 @@ dynamo_backend: "NO"
 
 #ec2_instance_type: local
 
-#distributed_type: DATA_PARALLEL
-#ec2_instance_type: ml.p4d.24xlarge
+distributed_type: DATA_PARALLEL
+ec2_instance_type: ml.p4d.24xlarge
 
-distributed_type: "NO"
-ec2_instance_type: ml.g5.xlarge
+#distributed_type: "NO"
+#ec2_instance_type: ml.g5.xlarge
 
 gpu_ids: all
 iam_role_name: AmazonSageMaker-ExecutionRole
