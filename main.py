@@ -22,12 +22,11 @@ def main(args):
         lora_dropout=args.lora_dropout,
     )
 
-    # TODO: we currently always set the seed which might not be required in all cases
     set_seed(args.seed)
 
     with accelerator.main_process_first():
         if torch.cuda.is_available():
-            model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float16)
+            model = AutoModelForCausalLM.from_pretrained(args.model_name)  # , torch_dtype=torch.float16)
         else:
             model = AutoModelForCausalLM.from_pretrained(args.model_name)
 
@@ -109,17 +108,27 @@ def main(args):
                                 golden_sample = f"Write a modern and engaging job posting for the following basic qualifications: {x}\r\nResponse: \r\n"
 
                                 inputs = tokenizer(golden_sample, return_tensors="pt")
+
                                 input_ids = inputs["input_ids"]
                                 if torch.cuda.is_available():
                                     input_ids = input_ids.to("cuda")
 
-                                outputs = accelerator.unwrap_model(model).generate(
-                                    input_ids=input_ids,
-                                    do_sample=True,
-                                    temperature=0.9,
-                                    max_length=1024,
-                                )
-                                print(tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True))
+                                try:
+                                    outputs = accelerator.unwrap_model(model).generate(
+                                        input_ids=input_ids,
+                                        do_sample=True,
+                                        temperature=0.9,
+                                        max_length=1024,
+                                    )
+                                    accelerator.print(
+                                        tokenizer.batch_decode(
+                                            outputs.detach().cpu().numpy(),
+                                            skip_special_tokens=True,
+                                        )
+                                    )
+                                except Exception as e:
+                                    accelerator.print("Error while decoding golden_sample (expected)")
+                                    accelerator.print(e)
 
                         model.train()
 

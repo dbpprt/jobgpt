@@ -1,12 +1,14 @@
 import random
 import re
-from accelerate import Accelerator
+
+import torch
 
 # pyright: reportPrivateImportUsage=false
 from datasets import load_dataset
-import torch
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
+
+from accelerate import Accelerator
 
 
 def get_dataloaders(accelerator: Accelerator, model_name: str, batch_size: int, seq_len: int):
@@ -51,25 +53,20 @@ def get_dataloaders(accelerator: Accelerator, model_name: str, batch_size: int, 
             model_inputs["input_ids"][i] = [tokenizer.pad_token_id] * (
                 seq_len - len(sample_input_ids)
             ) + sample_input_ids
-            model_inputs["attention_mask"][i] = [0] * (
-                seq_len - len(sample_input_ids)
-            ) + model_inputs["attention_mask"][i]
+            model_inputs["attention_mask"][i] = [0] * (seq_len - len(sample_input_ids)) + model_inputs[
+                "attention_mask"
+            ][i]
             labels["input_ids"][i] = [-100] * (seq_len - len(sample_input_ids)) + label_input_ids
             model_inputs["input_ids"][i] = torch.tensor(model_inputs["input_ids"][i][:seq_len])
-            model_inputs["attention_mask"][i] = torch.tensor(
-                model_inputs["attention_mask"][i][:seq_len]
-            )
+            model_inputs["attention_mask"][i] = torch.tensor(model_inputs["attention_mask"][i][:seq_len])
             labels["input_ids"][i] = torch.tensor(labels["input_ids"][i][:seq_len])
         model_inputs["labels"] = labels["input_ids"]
         return model_inputs
 
     def preprocess_function(examples: dict):
-        qualifications = [
-            x.replace("· ", "\r\n- ") for x in examples["BASIC QUALIFICATIONS"] if x is not None
-        ]
+        qualifications = [x.replace("· ", "\r\n- ") for x in examples["BASIC QUALIFICATIONS"] if x is not None]
         preferred_qualifications = [
-            x.replace("· ", "\r\n- ") 
-            for x in examples["PREFERRED QUALIFICATIONS"] if x is not None
+            x.replace("· ", "\r\n- ") for x in examples["PREFERRED QUALIFICATIONS"] if x is not None
         ]
 
         qualifications = [f"{x}{y}" for x, y in zip(qualifications, preferred_qualifications)]

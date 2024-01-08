@@ -16,11 +16,11 @@
             }
         },
         {
-            "name": "data.py",
+            "name": "about_a_training_loop.py",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "program": "data.py",
+            "program": "about_a_training_loop.py",
             "args": [],
             "console": "integratedTerminal",
             "env": {

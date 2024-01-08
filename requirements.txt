@@ -18,3 +18,4 @@ scikit-learn
 evaluate
 datasets
 bitsandbytes
+matplotlib
