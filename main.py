@@ -1,15 +1,12 @@
 import argparse
 import os
+
 import torch
+from peft import LoraConfig, get_peft_model, get_peft_model_state_dict
+from transformers import AutoModelForCausalLM, get_linear_schedule_with_warmup, set_seed
+
 from accelerate import Accelerator
 from accelerate.utils import find_executable_batch_size
-from peft import LoraConfig, get_peft_model, get_peft_model_state_dict
-from transformers import (
-    AutoModelForCausalLM,
-    get_linear_schedule_with_warmup,
-    set_seed,
-)
-
 from data import get_dataloaders
 
 
@@ -29,12 +26,16 @@ def main(args):
     set_seed(args.seed)
 
     with accelerator.main_process_first():
-        model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float16)
+        if torch.cuda.is_available():
+            model = AutoModelForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float16)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(args.model_name)
 
     # small fix to get gpt style generation working
     model.config.pad_token_id = model.config.eos_token_id
 
     model = get_peft_model(model, peft_config)
+
     # prints some nice information about the trainable parameters
     # and model stastics
     model.print_trainable_parameters()
@@ -108,17 +109,18 @@ def main(args):
                                 golden_sample = f"Write a modern and engaging job posting for the following basic qualifications: {x}\r\nResponse: \r\n"
 
                                 inputs = tokenizer(golden_sample, return_tensors="pt")
+                                input_ids = inputs["input_ids"]
+                                if torch.cuda.is_available():
+                                    input_ids = input_ids.to("cuda")
+
                                 outputs = accelerator.unwrap_model(model).generate(
-                                    input_ids=inputs["input_ids"].to("cuda"),
+                                    input_ids=input_ids,
                                     do_sample=True,
                                     temperature=0.9,
                                     max_length=1024,
                                 )
-                                print(
-                                    tokenizer.batch_decode(
-                                        outputs.detach().cpu().numpy(), skip_special_tokens=True
-                                    )
-                                )
+                                print(tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True))
+
                         model.train()
 
             adapter_weights = get_peft_model_state_dict(model=accelerator.unwrap_model(model))
@@ -137,8 +139,6 @@ def main(args):
                 f"[Training] Epoch: {epoch} Completed | Loss: {(total_loss / (len(train_dataloader))):.2f} - LR: {optimizer.param_groups[0]['lr']:.7f}"
             )
 
-    # batch_size is not needed here, as the decorator will set it
-    # pylint: disable=no-value-for-parameter
     training_loop()
 
     # accelerator.end_training()
@@ -148,7 +148,7 @@ def main(args):
 def parse_args():
     parser = argparse.ArgumentParser(description="Multilabel text classification")
 
-    parser.add_argument("--model_name", default="EleutherAI/pythia-2.8b", type=str)
+    parser.add_argument("--model_name", default="EleutherAI/pythia-70m", type=str)
 
     parser.add_argument(
         "--batch_size",
@@ -156,9 +156,7 @@ def parse_args():
         type=int,
         help="the training will find the max batch size that fits into memory and use gradient accumulation",
     )
-    parser.add_argument(
-        "--num_epochs", default=30, type=int, metavar="N", help="number of total epochs to run"
-    )
+    parser.add_argument("--num_epochs", default=30, type=int, metavar="N", help="number of total epochs to run")
     parser.add_argument("--seq_len", default=512, type=int, help="sequence length")
     parser.add_argument("--learning_rate", default=0.0005, type=float, help="initial learning rate")
     parser.add_argument("--seed", default=42, type=int, help="seed for initializing training. ")

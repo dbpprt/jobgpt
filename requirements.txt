@@ -6,10 +6,10 @@ pandas
 numpy
 
 # huggingface
--f git+https://github.com/huggingface/peft.git
+# -f git+https://github.com/huggingface/peft.git
 peft
 
--f git+https://github.com/huggingface/transformers.git@main
+# -f git+https://github.com/huggingface/transformers.git@main
 transformers
 
 accelerate[sagemaker]
